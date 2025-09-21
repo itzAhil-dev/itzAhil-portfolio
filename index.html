@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Itz Ahil | Portfolio</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header>
+<h1>Itz Ahil</h1>
+<p>Game Developer | Graphics Designer | 3D Modeller</p>
+<nav>
+<a href="index.html">Home</a>
+<a href="commissions.html">Commissions</a>
+<a href="login.html">Login</a>
+<a href="dashboard.html">Dashboard</a>
+</nav>
+</header>
+
+<main>
+<section class="projects">
+<h2 style="text-align:center;margin-bottom:30px;">My Projects</h2>
+<div id="projectsContainer"></div>
+</section>
+</main>
+
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+const SUPABASE_URL = "https://YOUR_PROJECT.supabase.co";
+const SUPABASE_ANON_KEY = "YOUR_ANON_KEY";
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+async function loadProjects(){
+  const { data, error } = await supabase.from('projects').select('*').order('created_at',{ascending:false});
+  if(error){ console.error(error); return; }
+  const container = document.getElementById('projectsContainer');
+  container.innerHTML = '';
+  data.forEach((p,i)=>{
+    const div = document.createElement('div');
+    div.className = 'project-card';
+    div.style.animationDelay = (i*0.2)+'s';
+    div.innerHTML = `
+      <img src="${p.image_url}" alt="${p.title}">
+      <h3>${p.title}</h3>
+      <p>${p.description}</p>
+      <a href="commissions.html">Commission Me</a>
+    `;
+    container.appendChild(div);
+  });
+}
+loadProjects();
+</script>
+</body>
+</html>
